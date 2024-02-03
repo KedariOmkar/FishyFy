@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Details</title>
+  <!-- Include Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-800">
+  <div class="container mx-auto mt-8 mx-5 my-5">
+
+    <!-- Species Image Card -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow mb-8 dark:border-gray-700 dark:bg-gray-800 my-5 mx-5">
+      <img class="object-cover w-full h-49 rounded-t-lg" src="{{ fish_data.fish_image }}" alt="{{ fish_data.fish_name }}">
+    </div>
+
+    <!-- Species Name Card -->
+    <div class="bg-green-400 text-white border-gray-200 p-4 mb-8 mx-4 my-4  ">
+      <h1 class="text-xl font-bold">{{ fish_data.fish_name }}</h1>
+    </div>
+
+    <!-- Container for Info Cards -->
+    <div id="info-section" class="flex flex-col justify-center items-center gap-5">
+ <div class="block max-w-lg p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+            <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Appearance</h4>
+            <p class="font-normal text-gray-700 dark:text-gray-400">{{ fish_data.fish_appearance }}</p>
+        </div>
+
+        <div class="block max-w-lg p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+            <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Habitat</h4>
+            <p class="font-normal text-gray-700 dark:text-gray-400">{{ fish_data.fish_habitat }}</p>
+        </div>
+
+
+
+        <div class="block max-w-lg p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+    <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Nutrients</h4>
+    <div class="relative overflow-x-auto">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Nutrient Names
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Values
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for nutrient in fish_data.fish_nutrients %}
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {{ nutrient.nutrient_title }}
+                        </th>
+                        <td class="px-6 py-4">
+                            {{ nutrient.nutrient_value }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+      <!-- Add more info cards as needed -->
+
+    </div></div>
+
+
+
+</body>
+
+</html>

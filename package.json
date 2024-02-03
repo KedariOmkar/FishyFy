@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "build:css": "tailwindcss build -o static/css/styles.css && cssnano static/css/styles.css -o static/css/styles.min.css"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

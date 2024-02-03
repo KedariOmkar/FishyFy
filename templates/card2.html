@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Web Page</title>
+  <!-- Tailwind CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-800">
+
+  <header class="bg-blue-500 p-4 text-white">
+    <div class="container mx-auto flex items-center justify-between">
+      <a href="/" class="text-2xl font-bold">Home</a>
+      <div class="relative text-gray-600 dark:text-gray-300">
+        <input type="search" id="myFilter" class="border-0 p-3 focus:ring-2 focus:ring-blue-500 rounded-md" placeholder="Search..." oninput="myFunction()">
+        <button type="submit" class="absolute right-0 top-0 mt-3 mr-4 hover:bg-sky-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-7a7 7 0 1 0-14 0 7 7 0 0 0 14 0zm-7 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container mx-auto mt-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="myProducts">
+
+     {% for fish_data in fish_data_result %}
+    <div class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800">
+      <a href="/details/{{ fish_data.fish_name }}" class="w-full">
+        <img class="object-cover w-full rounded-t-lg h-48 md:h-32 lg:h-40" src="{{ fish_data.fish_image }}" alt="{{ fish_data.fish_name }}">
+        <div class="flex flex-col justify-between p-4 leading-normal">
+          <p class="mb-2 text-xl font-bold text-gray-900 dark:text-white">{{ fish_data.fish_name }}</p>
+          <!-- <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ fish_data.details }}</p> -->
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+
+    </div>
+  </div>
+
+  <script>
+    function myFunction() {
+    var input, filter, cards, cardContainer, title, i;
+    input = document.getElementById("myFilter");
+    filter = input.value.toUpperCase();
+    cardContainer = document.getElementById("myProducts");
+    cards = cardContainer.getElementsByClassName("flex");
+    for (i = 0; i < cards.length; i++) {
+      title = cards[i].querySelector("a p.text-xl");  // Updated selector to target the speciesName
+      if (title.innerText.toUpperCase().indexOf(filter) > -1) {
+        cards[i].style.display = "";  // Updated to an empty string to reset the display property
+      } else {
+        cards[i].style.display = "none";
+      }
+    }
+  }
+</script>
+
+</body>
+
+</html>
