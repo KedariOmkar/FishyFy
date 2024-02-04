@@ -9,7 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <title>Fish Freshness Results</title>
 </head>
-<body class="bg-gray-100 ">
+<body class="bg-gray-100">
 
   <!-- Menu Bar -->
   <nav class="bg-blue-500 p-4 text-white">
@@ -29,81 +29,79 @@
 
       <!-- Display Fish Photo and Species Name -->
       <div class="mb-6">
-        <img id="result-image" alt="Fish" class="mx-auto w-48 h-48 mb-4 object-cover rounded-lg shadow-xl">
-        <p id="species-name" class="text-lg font-sans font-bold my-5 ">Species Name</p>
+        <img id="result-image" src="{{ fish_data.fish_image }}" alt="{{ fish_data.fish_name }}" class="mx-auto w-full h-48 mb-4 object-cover rounded-lg shadow-xl">
+        <p id="species-name" class="text-lg font-sans font-bold my-5">{{ fish_data.fish_name }}</p>
       </div>
 
       <!-- Toggle Buttons for Stats and Info -->
-<!--      <div class="flex w-240 justify-center mb-6 space-x-4">-->
-<!--        <button onclick="toggleSection('stats')" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Stats</button>-->
-<!--        <button onclick="toggleSection('info')" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Info</button>-->
-<!--      </div>-->
-
       <div class="inline-flex rounded-md shadow-sm my-5" role="group">
-  <button type="button" onclick="toggleSection('stats')" class="px-4 py-2 font-sans text-base font-bold text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">Freshness Stats</button>
-  <button type="button" onclick="toggleSection('info')" class="px-4 py-2 font-sans text-base font-bold text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">Fish Information</button>
-    </div>
-
-
+        <button type="button" onclick="toggleSection('stats')" class="px-4 py-2 font-sans text-base font-bold text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">Freshness Stats</button>
+        <button type="button" onclick="toggleSection('info')" class="px-4 py-2 font-sans text-base font-bold text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">Fish Information</button>
+      </div>
 
       <!-- Container for Stats Section -->
-      <div id="stats-section" class="hidden">
-        <div class="container mx-auto flex justify-center items-center">
-            <div class="flex flex-wrap flex-col  gap-x-8 gap-y-4 justify-center items-center">
-                <div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                    <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Prediction</h4>
-                    <p>Fresh</p>
-                </div>
-            </div>
+      <div id="stats-section" class="hidden flex justify-center items-center">
+        <div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+          <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Freshness Status</h4>
+          <div id="freshness-container" class="flex items-center justify-center">
+            <p id="freshness-text" class="text-xl font-semibold">{{ fish_data.freshness_status }}</p>
+          </div>
         </div>
       </div>
 
       <div id="info-section" class="hidden">
         <!-- Info Section -->
-        <div class="container mx-auto flex justify-center items-center">
+        <div class="container mx-auto flex justify-center items-center ">
 
-    <div class="flex flex-wrap flex-col  gap-x-8 gap-y-4 justify-center items-center">
-        <div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-            <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Apperance</h4>
-            <p class="font-normal text-gray-700 dark:text-gray-400">## Apperance text ##</p>
-        </div>
-
-        <div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-            <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Habitat</h4>
-            <p class="font-normal text-gray-700 dark:text-gray-400">## Habitat text ##.</p>
-        </div>
-
-        <div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-            <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">## Nutrient text ##</h4>
-            <div class="relative overflow-x-auto">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">
-                                ## Nutrient Title ##
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                ## Nutrient Value ##
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                ## Nutrient title a ##
-                            </th>
-                            <td class="px-6 py-4">
-                                ## Nutrient vlaue a ##
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+          <div class="flex flex-wrap flex-col justify-center items-center gap-x-8 gap-y-4">
+            <div class="block justify-center max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+              <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Appearance</h4>
+              <p class="font-normal text-gray-700 dark:text-gray-400">{{ fish_data.fish_appearance }}</p>
             </div>
+
+            <div class="block  justify-center max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+              <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Habitat</h4>
+              <p class="font-normal text-gray-700 dark:text-gray-400">{{ fish_data.fish_habitat }}</p>
+            </div>
+
+            <div class="block justify-center max-w-lg p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+              <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Nutrients</h4>
+              <div class="relative overflow-x-auto">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                  <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                      <th scope="col" class="px-6 py-3">
+                        Nutrient Names
+                      </th>
+                      <th scope="col" class="px-6 py-3">
+                        Values
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% if fish_data.fish_nutrients %}
+                      {% for nutrient in fish_data.fish_nutrients %}
+                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {{ nutrient.nutrient_title }}
+                          </th>
+                          <td class="px-6 py-4">
+                            {{ nutrient.nutrient_value }}
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    {% else %}
+                      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                        <td colspan="2" class="px-6 py-4 text-gray-500 dark:text-gray-400">No nutrient data available</td>
+                      </tr>
+                    {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
         </div>
-    </div>
-
-</div>
-
       </div>
 
     </div>
@@ -111,45 +109,6 @@
 
   <!-- JavaScript for Results Page -->
   <script>
-    // Retrieve the stored result from sessionStorage
-    const processingResult = JSON.parse('{{ processingResult | tojson | safe }}');
-
-    // Display the uploaded image and processing results
-    if (processingResult) {
-      document.getElementById('result-image').src = `data:image/png;base64,${processingResult.image}`;
-      document.getElementById('species-name').innerText = processingResult.fish_species;
-
-      // Add dynamic content to the Stats section
-      const statsTable = document.getElementById('stats-table');
-      const eyesValue = document.getElementById('eyes-value');
-      const gillsValue = document.getElementById('gills-value');
-      const skinValue = document.getElementById('skin-value');
-      const freshTip = document.getElementById('fresh-tip');
-
-      processingResult.stats.forEach(stat => {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td class="border px-4 py-2">${stat.icon}</td>
-                         <td class="border px-4 py-2">${stat.title}</td>
-                         <td class="border px-4 py-2">${stat.value}</td>`;
-        statsTable.querySelector('tbody').appendChild(row);
-
-        // Set tick or cross marks based on the backend data
-        if (stat.title === 'Eyes') {
-          eyesValue.innerText = stat.value === 'Fresh' ? '✔️' : '❌';
-        } else if (stat.title === 'Gills') {
-          gillsValue.innerText = stat.value === 'Fresh' ? '✔️' : '❌';
-        } else if (stat.title === 'Skin') {
-          skinValue.innerText = stat.value === 'Fresh' ? '✔️' : '❌';
-        }
-      });
-
-      // Show the stats table and fresh tip
-      statsTable.classList.remove('invisible');
-      freshTip.classList.remove('hidden');
-    } else {
-      // Handle the case when there is no result
-      document.getElementById('species-name').innerText = 'No data available.';
-    }
 
     // Function to toggle between Stats and Info sections
     function toggleSection(section) {

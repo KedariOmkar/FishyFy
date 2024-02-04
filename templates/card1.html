@@ -1,173 +1,260 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Identify and Check Freshness</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
 
-<body class="bg-gray-100">
-
+  <body class="bg-gray-100">
     <!-- Menu Bar -->
     <nav class="bg-blue-500 p-4 text-white">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="text-xl font-semibold">FishyFy</a>
-            <ul class="flex space-x-4">
-                <li><a href="/" class="hover:underline">User</a></li>
-            </ul>
-        </div>
+      <div class="container mx-auto flex justify-between items-center">
+        <a href="/" class="text-xl font-semibold">FishyFy</a>
+        <ul class="flex space-x-4">
+          <li><a href="/" class="hover:underline">User</a></li>
+        </ul>
+      </div>
     </nav>
 
     <!-- Content -->
     <div class="container mx-auto mt-10">
-        <div class="bg-white rounded-lg shadow-md p-6 text-center">
-            <h1 class="text-3xl font-semibold mb-4">Identify and Freshness</h1>
+      <div class="bg-white rounded-lg shadow-md p-6 text-center">
+        <h1 class="text-3xl font-semibold mb-4">Identify and Freshness</h1>
 
-            <p>Click on any option to input <span class='text-blue-500 font-bold'>Fish Image</span></p>
+        <p>
+          Click on any option to input
+          <span class="text-blue-500 font-bold">Fish Image</span>
+        </p>
 
-            <!-- Buttons -->
-            <div class="flex justify-center mt-4">
-                <button id="clickPhotoButton" onclick="startCamera()" class="bg-blue-500 text-white py-2 px-4 rounded mr-4 hover:bg-blue-600">Click Photo</button>
-                <button id="uploadPhotoButton" onclick="showFileUpload()" class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">Upload Photo</button>
-            </div>
-
-            <!-- Camera Container -->
-            <div id="camera-container" class="hidden mt-6 mx-auto">
-                <video id="live-video" class='mx-auto' width="400" height="300" autoplay></video>
-                <button onclick="takeSnapshot()" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full mt-6 text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">SHUTTER</button>
-            </div>
-
-            <!-- File Upload Container -->
-            <div id="fileUploadContainer" class="hidden mt-4">
-                <div class="flex items-center justify-center w-full">
-                    <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                            <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                            </svg>
-                            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                        </div>
-                        <input id="dropzone-file" type="file" class="hidden" />
-                    </label>
-                </div>
-                <button id="uploadButton" onclick="uploadFile()" class="bg-green-500 text-white py-2 px-4 rounded mt-4 hover:bg-green-600">Upload</button>
-            </div>
-
-            <!-- Captured Image Card -->
-            <div id="image-card" class="hidden mt-6">
-                <img id="captured-image" alt="Captured" class="mx-auto mb-4">
-                <button onclick="sendImageToBackend()" class="bg-blue-500 text-white py-2 px-4 rounded">Scan Image</button>
-            </div>
+        <!-- Buttons -->
+        <div class="flex justify-center mt-4">
+          <button
+            id="clickPhotoButton"
+            onclick="startCamera()"
+            class="bg-blue-500 text-white py-2 px-4 rounded mr-4 hover:bg-blue-600"
+          >
+            Click Photo
+          </button>
+          <button
+            id="uploadPhotoButton"
+            onclick="showFileUpload()"
+            class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+          >
+            Upload Photo
+          </button>
         </div>
 
-        <!-- Success Message (hidden by default) -->
-        <div id="uploadSuccessMessage" class="hidden mt-4 p-4 bg-green-500 text-white rounded-md">
-            File uploaded successfully!
+        <!-- Camera Container -->
+        <div id="camera-container" class="hidden mt-6 mx-auto">
+          <video
+            id="live-video"
+            class="mx-auto"
+            width="400"
+            height="300"
+            autoplay
+          ></video>
+          <button
+            onclick="takeSnapshot()"
+            class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full mt-6 text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+          >
+            SHUTTER
+          </button>
         </div>
 
+        <!-- File Upload Container -->
+        <div id="fileUploadContainer" class="hidden mt-4">
+          <div class="flex items-center justify-center w-full">
+            <label
+              for="dropzone-file"
+              class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+            >
+              <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                <svg
+                  class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 16"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                  />
+                </svg>
+                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                  <span class="font-semibold">Click to upload</span> or drag and
+                  drop
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  SVG, PNG, JPG or GIF (MAX. 800x400px)
+                </p>
+              </div>
+              <input id="dropzone-file" type="file" class="hidden" />
+            </label>
+          </div>
+          <button
+            id="uploadButton"
+            onclick="uploadFile()"
+            class="bg-green-500 text-white py-2 px-4 rounded mt-4 hover:bg-green-600"
+          >
+            Upload
+          </button>
+        </div>
+
+        <!-- Captured Image Card -->
+        <div id="image-card" class="hidden mt-6">
+          <img id="captured-image" alt="Captured" class="mx-auto mb-4" />
+          <button
+            onclick="sendImageToBackend()"
+            class="bg-blue-500 text-white py-2 px-4 rounded"
+          >
+            Scan Image
+          </button>
+        </div>
+      </div>
+
+      <!-- Success Message (hidden by default) -->
+      <div
+        id="uploadSuccessMessage"
+        class="hidden mt-4 p-4 bg-green-500 text-white rounded-md"
+      >
+        File uploaded successfully!
+      </div>
     </div>
 
     <!-- JavaScript for Camera and File Upload -->
     <script>
-        let video = document.getElementById('live-video');
-        let cameraContainer = document.getElementById('camera-container');
-        let fileUploadContainer = document.getElementById('fileUploadContainer');
-        let imageCard = document.getElementById('image-card');
-        let capturedImage = document.getElementById('captured-image');
-        let clickPhotoButton = document.getElementById('clickPhotoButton');
-        let uploadPhotoButton = document.getElementById('uploadPhotoButton');
-        let uploadButton = document.getElementById('uploadButton');
+      let video = document.getElementById("live-video");
+      let cameraContainer = document.getElementById("camera-container");
+      let fileUploadContainer = document.getElementById("fileUploadContainer");
+      let imageCard = document.getElementById("image-card");
+      let capturedImage = document.getElementById("captured-image");
+      let clickPhotoButton = document.getElementById("clickPhotoButton");
+      let uploadPhotoButton = document.getElementById("uploadPhotoButton");
+      let uploadButton = document.getElementById("uploadButton");
 
-        // Function to start the camera
-        async function startCamera() {
-            clickPhotoButton.disabled = true;
-            fileUploadContainer.classList.add('hidden');
+      // Function to start the camera
+      async function startCamera() {
+        clickPhotoButton.disabled = true;
+        fileUploadContainer.classList.add("hidden");
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                video.srcObject = stream;
-                cameraContainer.classList.remove('hidden');
-            } catch (error) {
-                console.error('Error accessing camera:', error);
-            }
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+          });
+          video.srcObject = stream;
+          cameraContainer.classList.remove("hidden");
+        } catch (error) {
+          console.error("Error accessing camera:", error);
         }
+      }
 
-        // Function to take snapshot
-        function takeSnapshot() {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            capturedImage.src = canvas.toDataURL('image/png');
-            cameraContainer.classList.add('hidden');
-            imageCard.classList.remove('hidden');
-            video.srcObject.getTracks().forEach(track => track.stop());
-            clickPhotoButton.disabled = false;
+      // Function to take snapshot
+      function takeSnapshot() {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        capturedImage.src = canvas.toDataURL("image/png");
+        cameraContainer.classList.add("hidden");
+        imageCard.classList.remove("hidden");
+        video.srcObject.getTracks().forEach((track) => track.stop());
+        clickPhotoButton.disabled = false;
+      }
+
+      // Function to show file upload container
+      function showFileUpload() {
+        uploadPhotoButton.disabled = true;
+        cameraContainer.classList.add("hidden");
+        imageCard.classList.add("hidden");
+        fileUploadContainer.classList.remove("hidden");
+      }
+
+      // Function to upload file
+      function uploadFile() {
+        const uploadInput = document.getElementById("dropzone-file");
+        const successMessage = document.getElementById("uploadSuccessMessage");
+
+        if (uploadInput.files.length > 0) {
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            capturedImage.src = e.target.result;
+            imageCard.classList.remove("hidden");
+            fileUploadContainer.classList.add("hidden");
+            uploadPhotoButton.disabled = false;
+
+            // Show success message
+            successMessage.classList.remove("hidden");
+
+            // Automatically hide the success message after 3 seconds (adjust as needed)
+            setTimeout(function () {
+              successMessage.classList.add("hidden");
+            }, 3000);
+          };
+
+          reader.readAsDataURL(uploadInput.files[0]);
         }
+      }
 
-        // Function to show file upload container
-        function showFileUpload() {
-            uploadPhotoButton.disabled = true;
-            cameraContainer.classList.add('hidden');
-            imageCard.classList.add('hidden');
-            fileUploadContainer.classList.remove('hidden');
-        }
+      // Function to send image to backend
+      function sendImageToBackend() {
+        const imageBase64 = capturedImage.src.split(",")[1];
+        const formData = new FormData();
+        formData.append("image", imageBase64);
 
-        // Function to upload file
-        function uploadFile() {
-            const uploadInput = document.getElementById('dropzone-file');
-            const successMessage = document.getElementById('uploadSuccessMessage');
-
-            if (uploadInput.files.length > 0) {
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    capturedImage.src = e.target.result;
-                    imageCard.classList.remove('hidden');
-                    fileUploadContainer.classList.add('hidden');
-                    uploadPhotoButton.disabled = false;
-
-                    // Show success message
-                    successMessage.classList.remove('hidden');
-
-                    // Automatically hide the success message after 3 seconds (adjust as needed)
-                    setTimeout(function () {
-                        successMessage.classList.add('hidden');
-                    }, 3000);
-                };
-
-                reader.readAsDataURL(uploadInput.files[0]);
-            }
-        }
-
-        // Function to send image to backend
-// Function to send image to backend
-function sendImageToBackend() {
-    const imageBase64 = capturedImage.src.split(',')[1];
-    const formData = new FormData();
-    formData.append('image', imageBase64);
-
-    // Send image data to the backend using fetch
-    fetch('/scan', {
-        method: 'POST',
-        body: formData,
-    })
-        .then(response => response.json())
-        .then(result => {
-            console.log(result); // Log the result from the backend
-            // You can handle the result as needed, update UI, show messages, etc.
+        // Send image data to the backend using fetch
+        fetch("/scan", {
+          method: "POST",
+          body: formData,
         })
-        .catch(error => {
-            console.error('Error sending image data:', error);
-        });
-}
+          .then((response) => response.json())
+          .then((result) => {
+            console.log(result);
+
+            // Check if it's a fish and send the species name to /results
+            if (result.result.fish_or_not === "fish") {
+              sendSpeciesToResults(result.result.species);
+            }
+          })
+          .catch((error) => {
+            console.error("Error sending image data:", error);
+          });
+      }
+
+      // Function to send species name to results endpoint
+      function sendSpeciesToResults(speciesName) {
+        const formData = new FormData();
+        formData.append("species_name", speciesName);
+
+        fetch("/results", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error communicating with the server");
+            }
+            return response.json();
+          })
+          .then((result) => {
+            console.log(result);
+            // Redirect to results.html
+            window.location.href = "/results";
+          })
+          .catch((error) => {
+            console.error("Error sending species data:", error);
+          });
+      }
     </script>
-
-</body>
-
+  </body>
 </html>

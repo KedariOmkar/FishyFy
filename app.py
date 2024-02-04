@@ -6,6 +6,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from pymongo import MongoClient
 import tensorflow as tf
 import numpy as np
+from urllib.parse import quote_plus
 from tensorflow.keras.applications.inception_v3 import InceptionV3, preprocess_input, decode_predictions
 
 from PIL import Image
@@ -14,6 +15,29 @@ app = Flask(__name__)
 
 UPLOAD_FOLDER = 'media'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
+# Replace the following with your MongoDB Atlas connection details
+username = "OnkIndustries"
+password = "Asus15@9527"
+cluster_name = "onkcloud.8y9wfls.mongodb.net"
+database_name = "fish_Freshness_Prediction"  # Replace with your actual database name
+collection_name = "fish_data"  # Replace with your actual collection name
+collection_name_save = "temporary_save"
+# Escape username and password
+escaped_username = quote_plus(username)
+escaped_password = quote_plus(password)
+
+# Create a MongoClient using the connection string
+connection_string = f"mongodb+srv://{escaped_username}:{escaped_password}@{cluster_name}/{database_name}?retryWrites=true&w=majority"
+client = MongoClient(connection_string)
+
+# Access the database
+db = client[database_name]
+
+# Access the collection
+collection = db[collection_name]  # Replace 'fish_data' with your actual collection name
+collection2 = db[collection_name_save]
 
 # Models
 def ifFishOrNot(image_data):
@@ -159,11 +183,48 @@ def ifFishOrNot(image_data):
     result = predict_objects(image_data)
 
     return result
+  # Replace 'fish_data' with your actual collection name
 
-# Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')  # Update the connection string accordingly
-db = client['test']  # Replace 'test' with your actual database name
-collection = db['fish_data']  # Replace 'fish_data' with your actual collection name
+
+def checkSpecies(model_path,image_path):
+
+    def predict_with_saved_model(model_path, image_path):
+        # Load the model
+        model = load_model(model_path)
+
+        # Load and preprocess the image
+        from tensorflow.keras.preprocessing import image
+        img = image.load_img(image_path, target_size=(128, 128))
+        img_array = image.img_to_array(img)
+        img_array = np.expand_dims(img_array, axis=0)
+        img_array /= 255.0
+
+        # Make predictions
+        predictions = model.predict(img_array)
+
+        # Get the predicted class label
+        predicted_class = np.argmax(predictions)
+
+        return predicted_class
+
+    def map_index_classes(index_id):
+        map_dict = {0: 'Bangus', 1: 'Big Head Carp', 2: 'Black Spotted Barb', 3: 'Catfish', 4: 'Climbing Perch',
+                    5: 'Fourfinger Threadfin', 6: 'Freshwater Eel', 7: 'Glass Perchlet', 8: 'Goby', 9: 'Gold Fish',
+                    10: 'Gourami', 11: 'Grass Carp', 12: 'Green Spotted Puffer', 13: 'Indian Carp',
+                    14: 'Indo-Pacific Tarpon', 15: 'Jaguar Gapote', 16: 'Janitor Fish', 17: 'Knifefish',
+                    18: 'Long-Snouted Pipefish', 19: 'Mosquito Fish', 20: 'Mudfish', 21: 'Mullet', 22: 'Pangasius',
+                    23: 'Perch', 24: 'Scat Fish', 25: 'Silver Barb', 26: 'Silver Carp', 27: 'Silver Perch', 28: 'Snakehead',
+                    29: 'Tenpounder', 30: 'Tilapia'}
+
+        class_name = map_dict.get(index_id)
+
+        return class_name
+
+    # test the model
+    predict = predict_with_saved_model(model_path,image_path)
+    class_name = map_index_classes(predict)
+
+    return class_name
 
 # Secret key for session management
 app.secret_key = 'elon-musk'
@@ -260,25 +321,6 @@ def process_image():
     return jsonify(result)
 
 
-@app.route('/results')
-def results():
-    # Dummy data for testing
-    dummy_data = {
-        'image': 'base64_image_data_here',  # Replace with actual base64 image data
-        'speciesName': 'Salmon',
-        'stats': [
-            {'icon': '📏', 'title': 'Length', 'value': '50 cm'},
-            {'icon': '📦', 'title': 'Weight', 'value': '2 kg'},
-            {'icon': '🌡️', 'title': 'Temperature', 'value': '12°C'},
-        ],
-        'nutrients': [
-            {'name': 'Protein', 'value': '20g'},
-            {'name': 'Oil', 'value': '10ml'},
-        ],
-    }
-
-    return render_template('results.html', processingResult=dummy_data)
-
 
 
 
@@ -306,6 +348,47 @@ def details(species_name):
     except Exception as e:
         print(f"Error: {e}")
 
+@app.route('/results', methods=['GET', 'POST'])
+def display_results():
+    fetch_data = {}  # Initialize an empty dictionary
+
+    if request.method == 'POST':
+        try:
+            # Get the species name from the request
+            species_name = request.form['species_name']
+
+            # Fetch data from MongoDB based on the species name
+            fetch_data = collection.find_one({'fish_name': species_name})
+
+            if fetch_data:
+                # Return the fetched data as JSON
+                return jsonify({'result': fetch_data})
+            else:
+                return jsonify({'result': {
+                    'status': 'error',
+                    'message': 'Species not found in the database'
+                }})
+
+        except Exception as e:
+            return jsonify({'result': {
+                'status': 'error',
+                'message': str(e)
+            }})
+    elif request.method == 'GET':
+        # If it's a GET request, render the results.html template with the fetched data
+        # For example, you can pass 'fish_data' as a context variable
+        return render_template('results.html', fish_data=fetch_data)
+
+
+@app.route('/render_results')
+def render_results():
+    # Get the fetched data from the request
+    fish_data = request.args.get('fish_data', None)
+
+    # Render results.html with fetched data
+    return render_template('results.html', fish_data=fish_data)
+
+    
 
 @app.route('/scan', methods=['POST'])
 def scan():
@@ -318,14 +401,23 @@ def scan():
 
         if result >= 1:
             prediction = 'fish'
+            # Replace this with the actual species name obtained from your model
+            species_name = 'bangus'
         else:
             prediction = 'not fish'
+            species_name = 'N/A'
 
         # Return the result as JSON
-        return jsonify({'result': prediction})
+        return jsonify({
+            'result': {
+                'fish_or_not': prediction,
+                'species': species_name
+            }
+        }), 200
 
     except Exception as e:
-        return jsonify({'error': str(e)})
+        return jsonify({'error': str(e)}), 500
+
 
 # Run the application
 if __name__ == '__main__':
