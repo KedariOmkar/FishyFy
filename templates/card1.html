@@ -4,30 +4,69 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Identify and Check Freshness</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
+      rel="stylesheet" />
   </head>
 
   <body class="bg-gray-100">
     <!-- Menu Bar -->
-    <nav class="bg-blue-500 p-4 text-white">
-      <div class="container mx-auto flex justify-between items-center">
-        <a href="/" class="text-xl font-semibold">FishyFy</a>
-        <ul class="flex space-x-4">
-          <li><a href="/" class="hover:underline">User</a></li>
-        </ul>
+    <nav
+      class="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+      <div
+        class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+          <img
+            src="https://flowbite.com/docs/images/logo.svg"
+            class="h-8"
+            alt="Flowbite Logo" />
+          <span
+            class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">FishyFy</span>
+        </a>
+        <button
+          data-collapse-toggle="navbar-hamburger"
+          type="button"
+          class="inline-flex items-center justify-center p-2 w-10 h-10 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+          aria-controls="navbar-hamburger"
+          aria-expanded="false">
+          <span class="sr-only">Open main menu</span>
+          <svg
+            class="w-5 h-5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 17 14">
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M1 1h15M1 7h15M1 13h15" />
+          </svg>
+        </button>
+        <div class="hidden w-full" id="navbar-hamburger">
+          <ul
+            class="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+            <li>
+              <a
+                href="/card4"
+                class="block py-2 px-3 text-white bg-blue-700 rounded dark:bg-blue-600"
+                aria-current="page">User</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
 
     <!-- Content -->
     <div class="container mx-auto mt-10">
       <div class="bg-white rounded-lg shadow-md p-6 text-center">
-        <h1 class="text-3xl font-semibold mb-4">Identify and Freshness</h1>
+        <h1 class="text-3xl font-semibold font-sans text-blue-950 mb-4">Fish
+          Species Identification and Freshness Checker</h1>
 
         <p>
-          Click on any option to input
+          Click on any option to input Image
           <span class="text-blue-500 font-bold">Fish Image</span>
         </p>
 
@@ -36,15 +75,13 @@
           <button
             id="clickPhotoButton"
             onclick="startCamera()"
-            class="bg-blue-500 text-white py-2 px-4 rounded mr-4 hover:bg-blue-600"
-          >
+            class="bg-blue-500 text-white py-2 px-4 rounded mr-4 hover:bg-blue-600">
             Click Photo
           </button>
           <button
             id="uploadPhotoButton"
             onclick="showFileUpload()"
-            class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
-          >
+            class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
             Upload Photo
           </button>
         </div>
@@ -53,15 +90,13 @@
         <div id="camera-container" class="hidden mt-6 mx-auto">
           <video
             id="live-video"
-            class="mx-auto"
+            class="mx-auto border-spacing-1 shadow-2xl"
             width="400"
             height="300"
-            autoplay
-          ></video>
+            autoplay></video>
           <button
             onclick="takeSnapshot()"
-            class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full mt-6 text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-          >
+            class="text-white bg-gray-800 hover:bg-white hover:border-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full mt-6 text-sm px-5 py-2.5 me-2 mb-2 transition-all duration-300 ease-in-out dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
             SHUTTER
           </button>
         </div>
@@ -71,23 +106,20 @@
           <div class="flex items-center justify-center w-full">
             <label
               for="dropzone-file"
-              class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-            >
+              class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
               <div class="flex flex-col items-center justify-center pt-5 pb-6">
                 <svg
                   class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
-                  viewBox="0 0 20 16"
-                >
+                  viewBox="0 0 20 16">
                   <path
                     stroke="currentColor"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                  />
+                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                 </svg>
                 <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
                   <span class="font-semibold">Click to upload</span> or drag and
@@ -103,35 +135,39 @@
           <button
             id="uploadButton"
             onclick="uploadFile()"
-            class="bg-green-500 text-white py-2 px-4 rounded mt-4 hover:bg-green-600"
-          >
+            class="bg-green-500 text-white py-2 px-4 rounded mt-4 hover:bg-green-600">
             Upload
           </button>
         </div>
 
         <!-- Captured Image Card -->
-        <div id="image-card" class="hidden mt-6">
-          <img id="captured-image" alt="Captured" class="mx-auto mb-4" />
+        <div id="image-card"
+          class="hidden mt-6 flex flex-col items-center justify-center p-6">
+          <img id="captured-image" alt="Captured"
+            class="mx-auto mb-4 w-50 h-50 object-cover shadow-lg hover:ring-2 rounded" />
           <button
-            onclick="sendImageToBackend()"
-            class="bg-blue-500 text-white py-2 px-4 rounded"
-          >
-            Scan Image
+            onclick="sendImageAndStartScanning()"
+            class="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 text-white font-medium py-2 px-4 flex items-center justify-center rounded">
+            <span class="mr-2">Scan Image</span>
+            <svg class="animate-bounce h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
           </button>
+          <div id="scanning-tip" class="hidden mt-4">
+            <div class="flex items-center">
+              <div id="running-ring"
+                class="w-4 h-4 border-t-4 border-blue-500 border-solid rounded-full animate-spin mr-2"></div>
+              <span
+                class="text-sm font-semibold text-blue-500">Scanning...</span>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <!-- Success Message (hidden by default) -->
-      <div
-        id="uploadSuccessMessage"
-        class="hidden mt-4 p-4 bg-green-500 text-white rounded-md"
-      >
-        File uploaded successfully!
-      </div>
-    </div>
-
-    <!-- JavaScript for Camera and File Upload -->
-    <script>
+        <!-- JavaScript for Camera and File Upload -->
+        <script>
       let video = document.getElementById("live-video");
       let cameraContainer = document.getElementById("camera-container");
       let fileUploadContainer = document.getElementById("fileUploadContainer");
@@ -182,7 +218,6 @@
       // Function to upload file
       function uploadFile() {
         const uploadInput = document.getElementById("dropzone-file");
-        const successMessage = document.getElementById("uploadSuccessMessage");
 
         if (uploadInput.files.length > 0) {
           const reader = new FileReader();
@@ -194,12 +229,8 @@
             uploadPhotoButton.disabled = false;
 
             // Show success message
-            successMessage.classList.remove("hidden");
 
             // Automatically hide the success message after 3 seconds (adjust as needed)
-            setTimeout(function () {
-              successMessage.classList.add("hidden");
-            }, 3000);
           };
 
           reader.readAsDataURL(uploadInput.files[0]);
@@ -219,11 +250,18 @@
         })
           .then((response) => response.json())
           .then((result) => {
-            console.log(result);
+            console.log(result.result.check_fish_result);
+            console.log(result.result.species_detected);
 
             // Check if it's a fish and send the species name to /results
-            if (result.result.fish_or_not === "fish") {
-              sendSpeciesToResults(result.result.species);
+            if (result.result.check_fish_result === "fish") {
+              sendSpeciesToResults(result.result.species_detected,result.result.image_data);
+            }
+            else{
+                // Display an alert for 'not fish'
+                showAlert("Not a fish! Please upload a fish image.");
+                // Reset the screen
+                resetScreen();
             }
           })
           .catch((error) => {
@@ -231,30 +269,92 @@
           });
       }
 
-      // Function to send species name to results endpoint
-      function sendSpeciesToResults(speciesName) {
-        const formData = new FormData();
-        formData.append("species_name", speciesName);
+      // Function to reset the screen
+function resetScreen() {
+  // Hide the image card
+  imageCard.classList.add("hidden");
+  // Hide the scanning tip
+  document.getElementById("scanning-tip").classList.add("hidden");
+  // Show the upload container
+  fileUploadContainer.classList.remove("hidden");
+  // Clear the input file
+  document.getElementById("dropzone-file").value = "";
+}
 
-        fetch("/results", {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Error communicating with the server");
-            }
-            return response.json();
-          })
-          .then((result) => {
-            console.log(result);
-            // Redirect to results.html
-            window.location.href = "/results";
-          })
-          .catch((error) => {
-            console.error("Error sending species data:", error);
-          });
+      function sendImageAndStartScanning() {
+        sendImageToBackend();
+        startScanning();
+    }
+
+      // Function to send species name to results endpoint
+function sendSpeciesToResults(speciesName,imageData) {
+  const formData = new FormData();
+  formData.append("species_name", speciesName);
+  formData.append("image_data",imageData);
+
+  fetch("/results", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Error communicating with the server");
       }
+      return response.text(); // Change to response.text() to get HTML content
+    })
+    .then((htmlContent) => {
+      // Assuming the response is HTML content
+      console.log("Received HTML content:", htmlContent);
+      
+      // Open a new window and write the HTML content
+      const newWindow = window.open();
+      newWindow.document.open();
+      newWindow.document.write(htmlContent);
+      newWindow.document.close();
+    })
+    .catch((error) => {
+      console.error("Error sending species data:", error);
+    });
+}
+
+
+      function startScanning() {
+        document.querySelector('#image-card button').style.display = 'none';
+        document.querySelector('#scanning-tip').style.display = 'flex';
+
+        // Simulate backend processing (replace this with your actual backend call)
+        setTimeout(() => {
+            document.querySelector('#scanning-tip').style.display = 'none';
+
+            // After processing, you can either show the results or fire the sendImageToBackend() function
+            // For simulation, let's show a success message
+
+            // Uncomment the line below to call the sendImageToBackend() function
+            // sendImageToBackend();
+        }, 5000);
+        document.querySelector('#image-card button').style.display = 'flex'; // Simulating a 3-second backend processing time, replace with your actual timing
+    }
+
+    // Function to show alert
+function showAlert(message) {
+  // Create a div for the alert message
+  const alertDiv = document.createElement("div");
+  alertDiv.className = "bg-red-500 text-white py-2 px-4 rounded mt-4";
+  alertDiv.textContent = message;
+
+  // Append the alert div to the body
+  document.body.appendChild(alertDiv);
+
+  // Automatically remove the alert after 5 seconds (adjust as needed)
+  setTimeout(function () {
+      alertDiv.remove();
+  }, 5000);
+}
+
+
     </script>
-  </body>
-</html>
+
+        <script
+          src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+      </body>
+    </html>

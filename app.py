@@ -1,17 +1,32 @@
-import base64
 import os
-from io import BytesIO
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
+
+import base64
+import numpy as np
+import requests
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from pymongo import MongoClient
-import tensorflow as tf
-import numpy as np
 from urllib.parse import quote_plus
-from tensorflow.keras.applications.inception_v3 import InceptionV3, preprocess_input, decode_predictions
-
 from PIL import Image
+from tensorflow.keras import applications
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.applications.inception_v3 import preprocess_input, decode_predictions
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from io import BytesIO
+from keras.src.applications.inception_v3 import InceptionV3
+
+
+
 
 app = Flask(__name__)
+
+
+# Secret key for session management
+app.secret_key = 'elon-musk'
 
 UPLOAD_FOLDER = 'media'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -23,7 +38,6 @@ password = "Asus15@9527"
 cluster_name = "onkcloud.8y9wfls.mongodb.net"
 database_name = "fish_Freshness_Prediction"  # Replace with your actual database name
 collection_name = "fish_data"  # Replace with your actual collection name
-collection_name_save = "temporary_save"
 # Escape username and password
 escaped_username = quote_plus(username)
 escaped_password = quote_plus(password)
@@ -31,20 +45,21 @@ escaped_password = quote_plus(password)
 # Create a MongoClient using the connection string
 connection_string = f"mongodb+srv://{escaped_username}:{escaped_password}@{cluster_name}/{database_name}?retryWrites=true&w=majority"
 client = MongoClient(connection_string)
-
 # Access the database
 db = client[database_name]
-
 # Access the collection
 collection = db[collection_name]  # Replace 'fish_data' with your actual collection name
-collection2 = db[collection_name_save]
 
-# Models
+
+""" Machine learning Models """
+""" Works Fine : Predicts if the image is fish or not , Returns Integer """
+
 def ifFishOrNot(image_data):
-    # Load the pre-trained InceptionV3 model
-    model = InceptionV3(weights='imagenet')
+    # Check if image_data is None
+    if image_data is None:
+        print("Error: image_data is None.")
+        return -1  # Or any other appropriate error code or value
 
-    # list of species to check
     species_list = ['Gourami', 'Midnight Lightning Clownfish', 'greenling', 'sailfish', 'Rockfish',
                     'bearded fireworm', 'sabertooth', 'leafy seadragon', 'grunt', 'Royal Gramma', 'Wolffish',
                     'Red Emperor Snapper', 'Golden Tilefish', 'pompano', 'Tetra', 'Croaker', 'whiting',
@@ -147,10 +162,17 @@ def ifFishOrNot(image_data):
                     'filefish', 'Blackear Wrasse', 'Milkfish', 'Mango Clownfish', 'cowfish', 'Blue Catfish',
                     'hogfish', 'platypus']
 
+    # Load the pre-trained InceptionV3 model
+    model = InceptionV3(weights='imagenet')
+
     # Function to predict objects in an image
     def predict_objects(image_data):
         # Decode base64 image data
-        image_data_decoded = base64.b64decode(image_data)
+        try:
+            image_data_decoded = base64.b64decode(image_data)
+        except Exception as e:
+            print(f"Error decoding base64 image data: {e}")
+            return -1  # Or any other appropriate error code or value
 
         # Convert to PIL Image
         image = Image.open(BytesIO(image_data_decoded)).resize((299, 299))  # InceptionV3 input size
@@ -181,20 +203,18 @@ def ifFishOrNot(image_data):
         return predicted_species
 
     result = predict_objects(image_data)
-
     return result
-  # Replace 'fish_data' with your actual collection name
 
 
-def checkSpecies(model_path,image_path):
 
-    def predict_with_saved_model(model_path, image_path):
-        # Load the model
-        model = load_model(model_path)
 
-        # Load and preprocess the image
-        from tensorflow.keras.preprocessing import image
-        img = image.load_img(image_path, target_size=(128, 128))
+def checkSpecies(model_path, base64_image):
+    def predict_with_saved_model(model, image_data):
+        # Decode base64 image data
+        image_data_decoded = base64.b64decode(image_data)
+
+        # Convert to PIL Image
+        img = image.load_img(BytesIO(image_data_decoded), target_size=(128, 128))
         img_array = image.img_to_array(img)
         img_array = np.expand_dims(img_array, axis=0)
         img_array /= 255.0
@@ -208,32 +228,99 @@ def checkSpecies(model_path,image_path):
         return predicted_class
 
     def map_index_classes(index_id):
-        map_dict = {0: 'Bangus', 1: 'Big Head Carp', 2: 'Black Spotted Barb', 3: 'Catfish', 4: 'Climbing Perch',
-                    5: 'Fourfinger Threadfin', 6: 'Freshwater Eel', 7: 'Glass Perchlet', 8: 'Goby', 9: 'Gold Fish',
-                    10: 'Gourami', 11: 'Grass Carp', 12: 'Green Spotted Puffer', 13: 'Indian Carp',
-                    14: 'Indo-Pacific Tarpon', 15: 'Jaguar Gapote', 16: 'Janitor Fish', 17: 'Knifefish',
-                    18: 'Long-Snouted Pipefish', 19: 'Mosquito Fish', 20: 'Mudfish', 21: 'Mullet', 22: 'Pangasius',
-                    23: 'Perch', 24: 'Scat Fish', 25: 'Silver Barb', 26: 'Silver Carp', 27: 'Silver Perch', 28: 'Snakehead',
-                    29: 'Tenpounder', 30: 'Tilapia'}
+        map_dict = {
+            0: 'Bangus', 1: 'Big Head Carp', 2: 'Black Spotted Barb', 3: 'Catfish', 4: 'Climbing Perch',
+            5: 'Fourfinger Threadfin', 6: 'Freshwater Eel', 7: 'Glass Perchlet', 8: 'Goby', 9: 'Gold Fish',
+            10: 'Gourami', 11: 'Grass Carp', 12: 'Green Spotted Puffer', 13: 'Indian Carp',
+            14: 'Indo-Pacific Tarpon', 15: 'Jaguar Gapote', 16: 'Janitor Fish', 17: 'Knifefish',
+            18: 'Long-Snouted Pipefish', 19: 'Mosquito Fish', 20: 'Mudfish', 21: 'Mullet', 22: 'Pangasius',
+            23: 'Perch', 24: 'Scat Fish', 25: 'Silver Barb', 26: 'Silver Carp', 27: 'Silver Perch', 28: 'Snakehead',
+            29: 'Tenpounder', 30: 'Tilapia'
+        }
 
         class_name = map_dict.get(index_id)
 
         return class_name
 
-    # test the model
-    predict = predict_with_saved_model(model_path,image_path)
+    # Load the model
+    model = load_model(model_path)
+
+    # Test the model
+    predict = predict_with_saved_model(model, base64_image)
     class_name = map_index_classes(predict)
 
     return class_name
 
-# Secret key for session management
-app.secret_key = 'elon-musk'
+def predict_Freshness_Eyes(saved_model_path, base64_image):
+    from tensorflow.keras.models import load_model
+
+    # Load the saved model
+    model = load_model(saved_model_path)
+
+    # Decode base64 image data
+    image_data_decoded = base64.b64decode(base64_image)
+
+    # Convert to PIL Image
+    img = image.load_img(BytesIO(image_data_decoded), target_size=(128, 128))
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0) / 255.0
+
+    prediction = model.predict(img_array)
+    return 'Fresh' if prediction[0][0] < 0.5 else 'Spoiled'
+
+def predict_Freshness_Gill(saved_model_path, base64_image):
+    from tensorflow.keras.models import load_model
+    from tensorflow.keras.preprocessing import image
+
+    # Load the saved model
+    model = load_model(saved_model_path)
+
+    # Decode base64 image data
+    image_data_decoded = base64.b64decode(base64_image)
+
+    # Convert to PIL Image
+    img = image.load_img(BytesIO(image_data_decoded), target_size=(128, 128))
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0) / 255.0
+
+    # Make predictions
+    prediction = model.predict(img_array)
+
+    # Return prediction
+    return 'Fresh' if prediction[0][0] < 0.5 else 'Non-Fresh'
+
+def predict_Freshness_Skin(saved_model_path, base64_image):
+    from tensorflow.keras.models import load_model
+    from tensorflow.keras.preprocessing import image
+
+    # Load the saved model
+    model = load_model(saved_model_path)
+
+    # Decode base64 image data
+    image_data_decoded = base64.b64decode(base64_image)
+
+    # Convert to PIL Image
+    img = image.load_img(BytesIO(image_data_decoded), target_size=(128, 128))
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0) / 255.0
+
+    # Make predictions
+    prediction = model.predict(img_array)
+
+    # Return prediction
+    return 'Fresh' if prediction[0][0] < 0.5 else 'Non-Fresh'
+
+
+
 
 # Routes
 @app.route('/')
 def home():
     return render_template('index.html')
 
+@app.route('/user_tab')
+def user_tab():
+    return render_template('user_tab.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -321,15 +408,24 @@ def process_image():
     return jsonify(result)
 
 
-
-
-
 @app.route('/card2')
 def card2():
     # Retrieve data from MongoDB
     fish_data = collection.find()
     # Pass data to the frontend
     return render_template('card2.html', fish_data_result=fish_data)
+
+@app.route('/card3')
+def card3():
+
+    # Pass data to the frontend
+    return render_template('card3.html')
+
+
+@app.route('/card4')
+def card4():
+    # Pass data to the frontend
+    return render_template('card4.html')
 
 
 @app.route('/details/<species_name>')
@@ -348,47 +444,73 @@ def details(species_name):
     except Exception as e:
         print(f"Error: {e}")
 
-@app.route('/results', methods=['GET', 'POST'])
-def display_results():
-    fetch_data = {}  # Initialize an empty dictionary
-
-    if request.method == 'POST':
-        try:
-            # Get the species name from the request
-            species_name = request.form['species_name']
-
-            # Fetch data from MongoDB based on the species name
-            fetch_data = collection.find_one({'fish_name': species_name})
-
-            if fetch_data:
-                # Return the fetched data as JSON
-                return jsonify({'result': fetch_data})
-            else:
-                return jsonify({'result': {
-                    'status': 'error',
-                    'message': 'Species not found in the database'
-                }})
-
-        except Exception as e:
-            return jsonify({'result': {
-                'status': 'error',
-                'message': str(e)
-            }})
-    elif request.method == 'GET':
-        # If it's a GET request, render the results.html template with the fetched data
-        # For example, you can pass 'fish_data' as a context variable
-        return render_template('results.html', fish_data=fetch_data)
-
-
-@app.route('/render_results')
-def render_results():
-    # Get the fetched data from the request
-    fish_data = request.args.get('fish_data', None)
-
-    # Render results.html with fetched data
-    return render_template('results.html', fish_data=fish_data)
-
+@app.route('/results', methods=['POST'])
+def results():
+    species_name = request.form.get('species_detected')
+    image_data = request.form.get('image_data')
     
+    
+    # here will be all the machine learning models that will predict
+    # now put freshness Models
+    skin_fresh = predict_Freshness_Skin('W:\\APP\\media\\sucess_models\\trained_models\\fishSpeciesPredictionModel.h5')
+    
+
+    species_data = {
+  "_id": {
+    "$oid": "65be14a3e2ebcf2b47359e54"
+  },
+  "fish_name": "bangus",
+  "fish_image": "https://3.bp.blogspot.com/-0rImcNr0lvY/Tp2Bzrq4Q5I/AAAAAAAAAIM/BzSa-dA0Qok/s1600/Milkfish.jpg",
+  "fish_habitat": "Bangus thrives in warm coastal environments, showcasing remarkable adaptability. This species is commonly found in estuaries, lagoons, and mangroves across the Indo-Pacific region. Its ability to tolerate various salinities allows it to inhabit both marine and brackish waters",
+  "fish_appearance": "The Bangus, or Milkfish (Chanos chanos), exhibits a streamlined and elongated body with a silver-gray coloration that glimmers in the light. Characterized by a forked tail and small, overlapping scales, the fish's skin adds to its sleek appearance",
+  "fish_nutrients": [
+    {
+      "nutrient_title": "Protein",
+      "nutrient_value": "20-25g"
+    },
+    {
+      "nutrient_title": "Omega-3 Fatty Acids",
+      "nutrient_value": "1-3g"
+    },
+    {
+      "nutrient_title": "Vitamin D",
+      "nutrient_value": "300-500 IU"
+    },
+    {
+      "nutrient_title": "Vitamin B12",
+      "nutrient_value": "300-500 IU"
+    },
+    {
+      "nutrient_title": "Vitamin A",
+      "nutrient_value": "50-200 IU"
+    },
+    {
+      "nutrient_title": "Iodine",
+      "nutrient_value": "50-100 mcg"
+    },
+    {
+      "nutrient_title": "Selenium",
+      "nutrient_value": "15-50 mcg"
+    },
+    {
+      "nutrient_title": "Iron and Zinc",
+      "nutrient_value": "0.5-2 mg"
+    },
+    {
+      "nutrient_title": "Low in Saturated Fat",
+      "nutrient_value": "0.5-3g"
+    },
+    {
+      "nutrient_title": "Low in Calories",
+      "nutrient_value": "80-200 calories"
+    }
+  ]
+}
+
+
+    return render_template('results.html',fish_data=species_data)
+
+
 
 @app.route('/scan', methods=['POST'])
 def scan():
@@ -396,27 +518,39 @@ def scan():
         # Get the image data from the request
         image_data = request.form['image']
 
-        # Call the machine learning function
-        result = ifFishOrNot(image_data)
+        # check if the given image is fish or not
+        try:
+            check_fish_result = ifFishOrNot(image_data)
+            print(check_fish_result)
+        except Exception as e:
+            print(e)
 
-        if result >= 1:
+        if check_fish_result >= 1:
             prediction = 'fish'
+            
+            try:
             # Replace this with the actual species name obtained from your model
-            species_name = 'bangus'
+                species_detected = checkSpecies('W:\\APP\\media\\sucess_models\\trained_models\\fishSpeciesPredictionModel.h5',image_data)
+                print(species_detected)
+            except Exception as e:
+                print('Exception',e) 
+
         else:
             prediction = 'not fish'
-            species_name = 'N/A'
+            species_detected = 'N/A'
 
-        # Return the result as JSON
         return jsonify({
             'result': {
-                'fish_or_not': prediction,
-                'species': species_name
+                'check_fish_result': prediction,
+                'species_detected': species_detected,
+                'image_data': image_data  # Add image data to the response
             }
         }), 200
 
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 
 # Run the application
