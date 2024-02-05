@@ -449,10 +449,12 @@ def results():
     species_name = request.form.get('species_detected')
     image_data = request.form.get('image_data')
     
+    print('Got Species:',species_name)
+    
     
     # here will be all the machine learning models that will predict
     # now put freshness Models
-    skin_fresh = predict_Freshness_Skin('W:\\APP\\media\\sucess_models\\trained_models\\fishSpeciesPredictionModel.h5')
+    #skin_fresh = predict_Freshness_Skin('W:\\APP\\media\\sucess_models\\trained_models\\fishSpeciesPredictionModel.h5')
     
 
     species_data = {
@@ -507,6 +509,7 @@ def results():
   ]
 }
 
+    print(species_data)
 
     return render_template('results.html',fish_data=species_data)
 

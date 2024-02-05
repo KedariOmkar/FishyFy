@@ -250,11 +250,12 @@
         })
           .then((response) => response.json())
           .then((result) => {
-            console.log(result.result.check_fish_result);
-            console.log(result.result.species_detected);
+            console.log('Recieved Result:'+result.result.check_fish_result);
+            console.log('Species Detected:'+result.result.species_detected);
 
             // Check if it's a fish and send the species name to /results
             if (result.result.check_fish_result === "fish") {
+              console.log('Fish is Detected .. Going to Results Route');
               sendSpeciesToResults(result.result.species_detected,result.result.image_data);
             }
             else{
@@ -286,12 +287,13 @@ function resetScreen() {
         startScanning();
     }
 
-      // Function to send species name to results endpoint
-function sendSpeciesToResults(speciesName,imageData) {
+     // Function to log species name and HTML content to console
+function sendSpeciesToResults(speciesName, imageData) {
   const formData = new FormData();
   formData.append("species_name", speciesName);
-  formData.append("image_data",imageData);
+  formData.append("image_data", imageData);
 
+  // Fetch the results
   fetch("/results", {
     method: "POST",
     body: formData,
@@ -303,19 +305,15 @@ function sendSpeciesToResults(speciesName,imageData) {
       return response.text(); // Change to response.text() to get HTML content
     })
     .then((htmlContent) => {
-      // Assuming the response is HTML content
       console.log("Received HTML content:", htmlContent);
-      
-      // Open a new window and write the HTML content
-      const newWindow = window.open();
-      newWindow.document.open();
-      newWindow.document.write(htmlContent);
-      newWindow.document.close();
+      console.log(htmlContent);
     })
     .catch((error) => {
       console.error("Error sending species data:", error);
     });
 }
+
+
 
 
       function startScanning() {
