@@ -67,9 +67,10 @@
 <div id="stats-section" class="hidden flex justify-center items-center">
   <div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
     <h4 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Freshness Status</h4>
-    <div id="freshness-container" class="flex items-center justify-center">
-      <p id="freshness-text" class="text-xl font-semibold">{{ fish_data.freshness_status }}</p>
-    </div>
+    <!-- Replace the freshness-container div with this modified version -->
+<div id="freshness-container" class="flex items-center justify-center">
+  <p id="freshness-text" class="text-xl dark:text-white text-white-400 font-semibold">{{ freshness_result }}</p>
+</div>
   </div>
 </div>
 

@@ -1,7 +1,6 @@
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
-
 import base64
 import numpy as np
 import requests
@@ -18,10 +17,10 @@ from tensorflow.keras.applications.inception_v3 import preprocess_input, decode_
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from io import BytesIO
 from keras.src.applications.inception_v3 import InceptionV3
+import tensorflow as tf
 
 
-
-
+""" Creating the instance of the flask application """
 app = Flask(__name__)
 
 
@@ -205,9 +204,6 @@ def ifFishOrNot(image_data):
     result = predict_objects(image_data)
     return result
 
-
-
-
 def checkSpecies(model_path, base64_image):
     def predict_with_saved_model(model, image_data):
         # Decode base64 image data
@@ -251,65 +247,28 @@ def checkSpecies(model_path, base64_image):
 
     return class_name
 
-def predict_Freshness_Eyes(saved_model_path, base64_image):
-    from tensorflow.keras.models import load_model
+def predict_Model(saved_model_path, base64_image):
+    try:
+        # Load the saved model
+        model = load_model(saved_model_path)
 
-    # Load the saved model
-    model = load_model(saved_model_path)
+        # Decode base64 image data
+        image_data_decoded = base64.b64decode(base64_image)
 
-    # Decode base64 image data
-    image_data_decoded = base64.b64decode(base64_image)
+        # Convert to PIL Image
+        img = image.load_img(BytesIO(image_data_decoded), target_size=(128, 128))
+        img_array = image.img_to_array(img)
+        img_array = np.expand_dims(img_array, axis=0) / 255.0
 
-    # Convert to PIL Image
-    img = image.load_img(BytesIO(image_data_decoded), target_size=(128, 128))
-    img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0) / 255.0
+        # Make predictions
+        prediction = model.predict(img_array)
 
-    prediction = model.predict(img_array)
-    return 'Fresh' if prediction[0][0] < 0.5 else 'Spoiled'
-
-def predict_Freshness_Gill(saved_model_path, base64_image):
-    from tensorflow.keras.models import load_model
-    from tensorflow.keras.preprocessing import image
-
-    # Load the saved model
-    model = load_model(saved_model_path)
-
-    # Decode base64 image data
-    image_data_decoded = base64.b64decode(base64_image)
-
-    # Convert to PIL Image
-    img = image.load_img(BytesIO(image_data_decoded), target_size=(128, 128))
-    img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0) / 255.0
-
-    # Make predictions
-    prediction = model.predict(img_array)
-
-    # Return prediction
-    return 'Fresh' if prediction[0][0] < 0.5 else 'Non-Fresh'
-
-def predict_Freshness_Skin(saved_model_path, base64_image):
-    from tensorflow.keras.models import load_model
-    from tensorflow.keras.preprocessing import image
-
-    # Load the saved model
-    model = load_model(saved_model_path)
-
-    # Decode base64 image data
-    image_data_decoded = base64.b64decode(base64_image)
-
-    # Convert to PIL Image
-    img = image.load_img(BytesIO(image_data_decoded), target_size=(128, 128))
-    img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0) / 255.0
-
-    # Make predictions
-    prediction = model.predict(img_array)
-
-    # Return prediction
-    return 'Fresh' if prediction[0][0] < 0.5 else 'Non-Fresh'
-
+        # Return prediction
+        return 'Fresh' if prediction[0][0] < 0.5 else 'Spoiled'
+    except Exception as e:
+        # Log any errors
+        print("Error predicting:", e)
+        return None
 
 
 
@@ -323,7 +282,7 @@ def user_tab():
     return render_template('user_tab.html')
 
 @app.route('/register', methods=['GET', 'POST'])
-def register():
+def register(mysql=None):
     if request.method == 'POST':
         # Fetch form data
         userDetails = request.form
@@ -395,19 +354,6 @@ def card1():
     return render_template('card1.html')
 
 
-@app.route('/process_image', methods=['POST'])
-def process_image():
-    data = request.get_json()
-    # Extract image data (base64) from the JSON payload
-    image_base64 = data.get('image', '')
-
-    # Process the image using your ML model
-    # Replace the following line with your actual image processing logic
-    result = {'image': image_base64, 'result': 'Image processed successfully'}
-
-    return jsonify(result)
-
-
 @app.route('/card2')
 def card2():
     # Retrieve data from MongoDB
@@ -444,76 +390,47 @@ def details(species_name):
     except Exception as e:
         print(f"Error: {e}")
 
+@app.route('/process_data', methods=['GET'])
+def process_data():
+    # You can perform any necessary data processing or validation here
+    
+    # Render the test.html template
+    return render_template('test.html')
+
+
 @app.route('/results', methods=['POST'])
 def results():
-    species_name = request.form.get('species_detected')
-    image_data = request.form.get('image_data')
-    
-    print('Got Species:',species_name)
-    
-    
-    # here will be all the machine learning models that will predict
-    # now put freshness Models
-    #skin_fresh = predict_Freshness_Skin('W:\\APP\\media\\sucess_models\\trained_models\\fishSpeciesPredictionModel.h5')
-    
+    if request.method == 'POST':
+        print("Result Route Fired...")
+        # Handle the POST request
+        species_name = request.form.get('species_name')
+        image_data = request.form.get('image_data')
 
-    species_data = {
-  "_id": {
-    "$oid": "65be14a3e2ebcf2b47359e54"
-  },
-  "fish_name": "bangus",
-  "fish_image": "https://3.bp.blogspot.com/-0rImcNr0lvY/Tp2Bzrq4Q5I/AAAAAAAAAIM/BzSa-dA0Qok/s1600/Milkfish.jpg",
-  "fish_habitat": "Bangus thrives in warm coastal environments, showcasing remarkable adaptability. This species is commonly found in estuaries, lagoons, and mangroves across the Indo-Pacific region. Its ability to tolerate various salinities allows it to inhabit both marine and brackish waters",
-  "fish_appearance": "The Bangus, or Milkfish (Chanos chanos), exhibits a streamlined and elongated body with a silver-gray coloration that glimmers in the light. Characterized by a forked tail and small, overlapping scales, the fish's skin adds to its sleek appearance",
-  "fish_nutrients": [
-    {
-      "nutrient_title": "Protein",
-      "nutrient_value": "20-25g"
-    },
-    {
-      "nutrient_title": "Omega-3 Fatty Acids",
-      "nutrient_value": "1-3g"
-    },
-    {
-      "nutrient_title": "Vitamin D",
-      "nutrient_value": "300-500 IU"
-    },
-    {
-      "nutrient_title": "Vitamin B12",
-      "nutrient_value": "300-500 IU"
-    },
-    {
-      "nutrient_title": "Vitamin A",
-      "nutrient_value": "50-200 IU"
-    },
-    {
-      "nutrient_title": "Iodine",
-      "nutrient_value": "50-100 mcg"
-    },
-    {
-      "nutrient_title": "Selenium",
-      "nutrient_value": "15-50 mcg"
-    },
-    {
-      "nutrient_title": "Iron and Zinc",
-      "nutrient_value": "0.5-2 mg"
-    },
-    {
-      "nutrient_title": "Low in Saturated Fat",
-      "nutrient_value": "0.5-3g"
-    },
-    {
-      "nutrient_title": "Low in Calories",
-      "nutrient_value": "80-200 calories"
-    }
-  ]
-}
+        # check freshness
+        eye_freshness = predict_Model('W:\\APP - saved\\APP\\media\\sucess_models\\trained_models\\Eyes_Model.h5',image_data)
+        print("Eye:",eye_freshness)
 
-    print(species_data)
+        # check gill freshness
+        gill_freshness = predict_Model('W:\\APP - saved\\APP\\media\\sucess_models\\trained_models\\Gill_Model.h5',image_data)
+        print("Gill:",gill_freshness)
 
-    return render_template('results.html',fish_data=species_data)
+        if eye_freshness and gill_freshness == 'Fresh':
+            global result
+            result = 'Fresh'
+        else:
+            result = 'Not Fresh'
+
+        print('Final Result:',result)
 
 
+        # Fetch the data
+        fetch_data = collection.find_one({'fish_name':species_name})
+
+        print("Opening the results web page")
+        return render_template('results.html',fish_data=fetch_data,freshness_result=result)
+    else:
+        # Handle other HTTP methods
+        return 'Method Not Allowed', 405
 
 @app.route('/scan', methods=['POST'])
 def scan():
@@ -554,6 +471,9 @@ def scan():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/test')
+def test():
+    return render_template('test.html')
 
 
 # Run the application
