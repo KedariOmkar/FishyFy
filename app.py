@@ -13,11 +13,11 @@ from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.applications.inception_v3 import preprocess_input, decode_predictions
+from tensorflow.keras.applications.inception_v3 import preprocess_input, decode_predictions, InceptionV3
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from io import BytesIO
-from keras.src.applications.inception_v3 import InceptionV3
 import tensorflow as tf
+
 
 
 """ Creating the instance of the flask application """
