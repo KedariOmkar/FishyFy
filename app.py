@@ -476,7 +476,3 @@ def test():
     return render_template('test.html')
 
 
-# Run the application
-if __name__ == '__main__':
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)  # Create the upload folder if it doesn't exist
-    app.run(debug=True)
