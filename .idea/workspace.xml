@@ -5,22 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5a37a36d-8bab-4601-9b8f-1b07f35c7068" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/media/sucess_models/new_predict_functions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/sucess_models/trained_models/Gill_Model.h5" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/sucess_models/trained_models/Skin_Model.h5" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media/testing_models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/APP.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/APP.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/sucess_models/trained_models/fishGillPredictionModel.keras" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/sucess_models/trained_models/fishGillPredictionModelSkin.keras" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/sucess_models/trained_models/fishSpeciesPredictionModel.h5" beforeDir="false" afterPath="$PROJECT_DIR$/media/sucess_models/trained_models/Species_Model.h5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/sucess_models/trained_models/fish_freshness_model.h5" beforeDir="false" afterPath="$PROJECT_DIR$/media/sucess_models/trained_models/Eyes_Model.h5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/card1.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/card1.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/results.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/results.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/test.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/test.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/testing_models.py" beforeDir="false" afterPath="$PROJECT_DIR$/media/testing_models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,9 +23,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="2cGnTwuSecL48IW68uANkY8gD6R" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -49,7 +35,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "W:/APP - saved/APP/media/sucess_models/trained_models"
   }
 }]]></component>
@@ -58,7 +44,7 @@
       <recent name="W:\APP - saved\APP\media\sucess_models\trained_models" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.testing_models">
     <configuration name="new_predict_functions" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="APP" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -119,9 +105,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.testing_models" />
         <item itemvalue="Python tests.pytest in app.py" />
         <item itemvalue="Python.new_predict_functions" />
-        <item itemvalue="Python.testing_models" />
       </list>
     </recent_temporary>
   </component>
